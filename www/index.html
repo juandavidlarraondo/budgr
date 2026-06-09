@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>budgr — own your money</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;
+  --surface:#ffffff;
+  --surface2:#f0efe9;
+  --border:#e2e0d8;
+  --text:#1a1916;
+  --muted:#8a887e;
+  --accent:#2d6a4f;
+  --accent-lt:#d8ede4;
+  --accent2:#e76f51;
+  --accent2-lt:#fce8e2;
+  --blue:#2563eb;
+  --blue-lt:#dbeafe;
+  --red:#c0392b;
+  --red-lt:#fde8e6;
+  --yellow:#b45309;
+  --yellow-lt:#fef3c7;
+  --green:#2d6a4f;
+  --radius:16px;
+  --radius-sm:10px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 16px 100px}
+.app{width:100%;max-width:560px}
+
+/* Header */
+.header{margin-bottom:32px}
+.logo{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);letter-spacing:-.5px;line-height:1}
+.logo em{color:var(--accent);font-style:normal}
+.tagline{font-size:13px;color:var(--muted);margin-top:4px;font-weight:400;letter-spacing:.2px}
+
+/* Progress */
+.progress-wrap{margin-bottom:28px}
+.progress-track{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease}
+.progress-label{font-size:11px;color:var(--muted);margin-top:6px;font-weight:500;text-transform:uppercase;letter-spacing:.8px}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 24px;margin-bottom:16px}
+.card-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:8px}
+.card-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:6px;line-height:1.2}
+.card-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:22px}
+
+/* Form */
+label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.input-row{margin-bottom:16px}
+.input-wrap{position:relative}
+.input-wrap .pfx{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none;font-weight:500}
+.input-wrap .sfx{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none}
+input[type=number],input[type=text]{
+  width:100%;background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:13px 14px 13px 30px;color:var(--text);font-size:15px;
+  font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s,background .2s;
+  -moz-appearance:textfield}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]:focus,input[type=text]:focus{border-color:var(--accent);background:var(--surface)}
+input.sfx-pad{padding-right:38px}
+input.no-pfx{padding-left:14px}
+
+/* Toggle pills */
+.pill-group{display:flex;gap:6px;margin-bottom:20px;background:var(--surface2);padding:4px;border-radius:var(--radius-sm);border:1px solid var(--border)}
+.pill{flex:1;padding:8px 6px;border-radius:8px;border:none;background:transparent;
+  color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;
+  font-family:'DM Sans',sans-serif;letter-spacing:.2px}
+.pill.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+
+/* Expense list */
+.expense-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.exp-item{display:flex;align-items:center;gap:10px;background:var(--surface2);
+  border-radius:var(--radius-sm);padding:10px 14px;border:1.5px solid var(--border)}
+.exp-item.cc{border-color:#fbb6a8}
+.exp-emoji{font-size:16px;min-width:22px;text-align:center}
+.exp-name{flex:1;font-size:13px;font-weight:500}
+.exp-badge{font-size:10px;background:var(--red-lt);color:var(--red);border-radius:4px;
+  padding:2px 6px;margin-left:4px;font-weight:600}
+.exp-amt{font-size:13px;color:var(--muted);min-width:60px;text-align:right}
+.exp-del{background:none;border:none;color:var(--border);cursor:pointer;font-size:18px;
+  line-height:1;transition:color .15s;padding:0 2px}
+.exp-del:hover{color:var(--red)}
+.add-row{display:flex;gap:8px;align-items:center}
+.add-row select{flex:1.5;background:var(--surface2);border:1.5px solid var(--border);
+  color:var(--text);border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;
+  font-family:'DM Sans',sans-serif;outline:none;cursor:pointer;min-width:0}
+.add-row .input-wrap{flex:1;min-width:80px}
+.add-row input{font-size:13px;padding:10px 10px 10px 26px}
+.add-circle{background:var(--accent);border:none;color:#fff;border-radius:50%;
+  width:38px;height:38px;font-size:20px;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:opacity .2s}
+.add-circle:hover{opacity:.85}
+
+/* Buttons */
+.btn-main{width:100%;padding:15px;background:var(--text);border:none;border-radius:var(--radius-sm);
+  color:#fff;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;
+  transition:opacity .2s;margin-top:8px;letter-spacing:.2px}
+.btn-main:hover{opacity:.85}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--muted);
+  padding:11px 18px;border-radius:var(--radius-sm);font-size:13px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;font-weight:500}
+.btn-ghost:hover{border-color:var(--text);color:var(--text)}
+.back-row{display:flex;gap:8px;margin-bottom:16px}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(26,25,22,.6);display:flex;
+  align-items:center;justify-content:center;z-index:100;padding:20px;backdrop-filter:blur(4px)}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:28px 24px;width:100%;max-width:380px}
+.modal h3{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:6px}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.modal-btns{display:flex;gap:8px;margin-top:16px}
+.modal-btns button{flex:1}
+
+/* Verdict */
+.verdict{border-radius:var(--radius);padding:24px;margin-bottom:16px;border:1.5px solid}
+.verdict.good{background:var(--accent-lt);border-color:#a7d4be}
+.verdict.tight{background:var(--yellow-lt);border-color:#fcd34d}
+.verdict.bad{background:var(--red-lt);border-color:#fca5a5}
+.v-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.v-emoji{font-size:28px}
+.v-title{font-family:'DM Serif Display',serif;font-size:20px;line-height:1.1}
+.verdict.good .v-title{color:var(--accent)}
+.verdict.tight .v-title{color:var(--yellow)}
+.verdict.bad .v-title{color:var(--red)}
+.v-msg{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* Summary rows */
+.sum-row{display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted)}
+.sum-row:last-child{border-bottom:none}
+.sum-row strong{color:var(--text);font-size:14px;font-weight:600}
+.pos{color:var(--green)!important}
+.neg{color:var(--red)!important}
+
+/* Donut */
+.chart-wrap{position:relative;width:148px;height:148px;margin:0 auto 20px}
+svg.donut{transform:rotate(-90deg)}
+.chart-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.chart-center .big{font-family:'DM Serif Display',serif;font-size:18px;color:var(--text)}
+.chart-center .sm{font-size:10px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.legend{display:flex;flex-direction:column;gap:8px}
+.leg-item{display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--surface2);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.leg-label{flex:1;font-size:12px;font-weight:500}
+.leg-pct{font-size:11px;color:var(--muted)}
+.leg-amt{font-size:13px;font-weight:600;min-width:60px;text-align:right}
+
+/* Section label */
+.s-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:14px}
+
+/* Advice cards */
+.advice-card{border-radius:var(--radius-sm);padding:16px;margin-bottom:10px;
+  border:1.5px solid var(--border);background:var(--surface2);display:flex;gap:12px}
+.advice-card.priority{background:var(--accent-lt);border-color:#a7d4be}
+.advice-card.caution{background:var(--yellow-lt);border-color:#fcd34d}
+.advice-card.danger{background:var(--red-lt);border-color:#fca5a5}
+.ac-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.ac-body{flex:1}
+.ac-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.ac-text{font-size:12px;color:var(--muted);line-height:1.65}
+.ac-action{display:inline-block;margin-top:7px;font-size:11px;font-weight:600;
+  color:var(--accent);background:var(--accent-lt);border-radius:5px;padding:3px 9px}
+.ac-source{font-size:10px;color:var(--muted);margin-top:5px;font-weight:500}
+
+/* CC Warning */
+.cc-box{background:var(--red-lt);border:1.5px solid #fca5a5;border-radius:var(--radius);
+  padding:22px;margin-bottom:16px}
+.cc-head{font-family:'DM Serif Display',serif;font-size:18px;color:var(--red);margin-bottom:4px}
+.cc-sub{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+.cc-strat{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #fca5a560}
+.cc-strat:last-of-type{border-bottom:none;padding-bottom:0}
+.cs-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.cs-body{font-size:12px;color:var(--muted);line-height:1.6}
+.cs-title{font-size:13px;font-weight:700;color:var(--text);display:block;margin-bottom:3px}
+.cc-source{font-size:10px;color:var(--muted);margin-top:12px;font-weight:500}
+
+/* Goal planner */
+.goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.goal-opt{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s}
+.goal-opt:hover{border-color:var(--accent)}
+.goal-opt.sel{border-color:var(--accent);background:var(--accent-lt)}
+.g-icon{font-size:22px;margin-bottom:5px}
+.g-label{font-size:11px;font-weight:600;color:var(--muted)}
+.goal-opt.sel .g-label{color:var(--accent)}
+.divider{height:1px;background:var(--border);margin:6px 0 18px}
+.goal-result{background:var(--accent-lt);border:1.5px solid #a7d4be;border-radius:var(--radius-sm);padding:16px;margin-top:14px}
+.gr-title{font-family:'DM Serif Display',serif;font-size:15px;color:var(--accent);margin-bottom:10px}
+.g-stat{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);
+  padding:5px 0;border-bottom:1px solid #a7d4be60}
+.g-stat:last-of-type{border-bottom:none}
+.g-stat strong{color:var(--text);font-weight:600}
+.bar-wrap{background:#a7d4be60;border-radius:4px;height:6px;overflow:hidden;margin:10px 0 5px}
+.bar-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .5s ease}
+.freq-compare{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.fc-row{display:flex;align-items:center;gap:10px;padding:8px 12px;
+  background:var(--surface);border:1.5px solid var(--border);border-radius:8px}
+.fc-row.active{border-color:var(--accent);background:var(--accent-lt)}
+.fc-label{flex:1;font-size:12px;font-weight:500;color:var(--muted)}
+.fc-row.active .fc-label{color:var(--text);font-weight:600}
+.fc-time{font-size:12px;font-weight:600;color:var(--muted)}
+.fc-row.active .fc-time{color:var(--accent)}
+
+/* Invest */
+.invest-inner{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px}
+.invest-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.invest-sub{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px}
+input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer;margin:6px 0}
+.slider-ends{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:8px}
+.inv-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:3px 0}
+.inv-row strong{color:var(--text);font-weight:600}
+.inv-total{display:flex;justify-content:space-between;font-size:14px;padding:10px 0 0;
+  margin-top:6px;border-top:1px solid var(--border)}
+.inv-total span{font-weight:700;color:var(--text)}
+.inv-total strong{color:var(--accent);font-size:16px}
+
+/* Source footer */
+.source-footer{font-size:11px;color:var(--muted);line-height:1.6;margin-top:8px;
+  padding-top:10px;border-top:1px solid var(--border)}
+.source-footer a{color:var(--accent);text-decoration:none}
+
+/* Info note */
+.info-note{background:var(--accent-lt);border:1px solid #a7d4be;border-radius:var(--radius-sm);
+  padding:11px 14px;font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:4px}
+.info-note strong{color:var(--accent)}
+
+/* Budget Plan */
+.bp-header{background:var(--text);color:#fff;border-radius:var(--radius) var(--radius) 0 0;padding:22px 24px}
+.bp-header-title{font-family:'DM Serif Display',serif;font-size:20px;margin-bottom:3px}
+.bp-header-sub{font-size:12px;opacity:.65;line-height:1.5}
+.bp-body{background:var(--surface);border:1.5px solid var(--border);border-top:none;
+  border-radius:0 0 var(--radius) var(--radius);padding:0 0 4px;margin-bottom:16px}
+.bp-section{padding:16px 20px 4px}
+.bp-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;
+  color:var(--muted);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);
+  display:flex;justify-content:space-between}
+.bp-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.bp-row:last-child{border-bottom:none}
+.bp-emoji{font-size:15px;min-width:20px;text-align:center}
+.bp-name{flex:1;font-size:13px;color:var(--text)}
+.bp-current{font-size:12px;color:var(--muted);min-width:60px;text-align:right}
+.bp-arrow{font-size:11px;color:var(--muted);padding:0 4px}
+.bp-proposed{font-size:13px;font-weight:600;min-width:64px;text-align:right}
+.bp-proposed.cut{color:var(--red)}
+.bp-proposed.same{color:var(--muted)}
+.bp-proposed.ok{color:var(--accent)}
+.bp-tag{font-size:10px;border-radius:4px;padding:2px 6px;font-weight:600;margin-left:6px;white-space:nowrap}
+.bp-tag.reduce{background:var(--red-lt);color:var(--red)}
+.bp-tag.keep{background:var(--accent-lt);color:var(--accent)}
+.bp-tag.priority{background:var(--yellow-lt);color:var(--yellow)}
+.bp-summary{background:var(--surface2);border-top:1.5px solid var(--border);padding:16px 20px}
+.bp-sum-row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:5px 0}
+.bp-sum-row.total{font-weight:700;color:var(--text);font-size:14px;padding-top:10px;
+  border-top:1px solid var(--border);margin-top:4px}
+.bp-sum-row.total span:last-child{color:var(--accent)}
+.bp-note{font-size:11px;color:var(--muted);line-height:1.6;margin-top:12px;padding-top:10px;
+  border-top:1px solid var(--border)}
+.bp-pill{display:inline-block;font-size:11px;font-weight:600;border-radius:20px;
+  padding:4px 10px;margin:2px 3px}
+.bp-pill.green{background:var(--accent-lt);color:var(--accent)}
+.bp-pill.red{background:var(--red-lt);color:var(--red)}
+.bp-pill.yellow{background:var(--yellow-lt);color:var(--yellow)}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="logo">bu<em>dgr</em></div>
+    <div class="tagline">own your money · build your future</div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
+    <div class="progress-label" id="progressLabel">Step 1 of 4 — Income</div>
+  </div>
+
+  <!-- ── STEP 1: Income ── -->
+  <div id="step1">
+    <div class="card">
+      <div class="card-eyebrow">Your money in</div>
+      <div class="card-title">What do you earn?</div>
+      <div class="card-sub">Enter the money that actually lands in your bank account — after taxes. Include any side income too.</div>
+      <div class="pill-group">
+        <button class="pill active" onclick="setFreq('weekly',this)">Weekly</button>
+        <button class="pill" onclick="setFreq('biweekly',this)">Every 2 weeks</button>
+        <button class="pill" onclick="setFreq('monthly',this)">Monthly</button>
+      </div>
+      <div class="input-row">
+        <label>Main paycheck / job</label>
+        <div class="input-wrap"><span class="pfx">$</span>
+          <input type="number" id="income" placeholder="0" min="0" step="1"/>
+        </div>
+      </div>
+      <div class="input-row">
+        <label>Side hustle, tips, or other (optional)</label>
+        <div class="input-wrap"><span class="pfx">$</span>
+          <input type="number" id="income2" placeholder="0" min="0" step="1"/>
+        </div>
+      </div>
+      <div class="info-note">💡 <strong>Tip:</strong> Enter your take-home pay — not your hourly rate or salary before taxes.</div>
+    </div>
+    <button class="btn-main" onclick="goStep2()">Next — Add expenses →</button>
+  </div>
+
+  <!-- ── STEP 2: Expenses ── -->
+  <div id="step2" class="hidden">
+    <div class="card">
+      <div class="card-eyebrow">Your money out</div>
+      <div class="card-title">What do you spend?</div>
+      <div class="card-sub">Add each monthly expense. Pick a category, enter the amount, tap +. Rough numbers are fine.</div>
+      <div class="expense-list" id="expList"></div>
+      <div class="add-row">
+        <select id="expCat">
+          <optgroup label="Housing"><option>🏠 Rent / Housing</option></optgroup>
+          <optgroup label="Food">
+            <option>🛒 Groceries</option>
+            <option>🍔 Eating Out</option>
+          </optgroup>
+          <optgroup label="Transportation">
+            <option>🚗 Car Payment</option>
+            <option>⛽ Gas</option>
+            <option>🛡️ Car Insurance</option>
+            <option>🔧 Car Maintenance</option>
+            <option>🚌 Public Transit</option>
+          </optgroup>
+          <optgroup label="Utilities">
+            <option>💡 Electricity</option>
+            <option>🔥 Gas (Home)</option>
+            <option>💧 Water</option>
+          </optgroup>
+          <optgroup label="Communication">
+            <option>📱 Phone</option>
+            <option>🌐 Internet</option>
+          </optgroup>
+          <optgroup label="Debt">
+            <option>💳 Credit Card</option>
+            <option>🎓 Student Loan</option>
+          </optgroup>
+          <optgroup label="Lifestyle">
+            <option>🎮 Entertainment</option>
+            <option>📺 Subscriptions</option>
+            <option>👗 Clothing</option>
+            <option>💊 Health / Medicine</option>
+            <option>🏋️ Gym</option>
+            <option>📚 Education</option>
+          </optgroup>
+          <option>✏️ Other</option>
+        </select>
+        <div class="input-wrap"><span class="pfx">$</span>
+          <input type="number" id="expAmt" placeholder="Amount" min="0" step="1"/>
+        </div>
+        <button class="add-circle" onclick="addExpense()">+</button>
+      </div>
+    </div>
+    <div class="back-row">
+      <button class="btn-ghost" onclick="goStep1()">← Back</button>
+      <button class="btn-main" style="margin-top:0;flex:1" onclick="goStep3()">See my results →</button>
+    </div>
+  </div>
+
+  <!-- CC Modal -->
+  <div class="modal-overlay hidden" id="ccModal">
+    <div class="modal">
+      <h3>Credit Card Added</h3>
+      <p>Do you know the interest rate (APR) on this card? You'll find it on your statement. It helps us show you exactly what carrying a balance is costing you.</p>
+      <div class="input-row">
+        <label>Interest rate / APR — optional</label>
+        <div class="input-wrap">
+          <input type="number" id="ccRate" class="no-pfx sfx-pad" placeholder="e.g. 24" min="0" max="100" step="0.1"/>
+          <span class="sfx">%</span>
+        </div>
+      </div>
+      <div class="modal-btns">
+        <button class="btn-ghost" onclick="confirmCC(false)">Skip</button>
+        <button class="btn-main" style="margin-top:0" onclick="confirmCC(true)">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STEP 3: Results ── -->
+  <div id="step3" class="hidden">
+
+    <div id="verdictBox"></div>
+    <div id="ccBox"></div>
+
+    <!-- Summary -->
+    <div class="card">
+      <div class="sum-row"><span>Monthly income</span><strong id="r_inc">—</strong></div>
+      <div class="sum-row"><span>Monthly expenses</span><strong id="r_exp">—</strong></div>
+      <div class="sum-row"><span>Left over each month</span><strong id="r_left">—</strong></div>
+    </div>
+
+    <!-- Budget split -->
+    <div class="card">
+      <div class="s-label">How to split your money</div>
+      <div class="chart-wrap">
+        <svg class="donut" width="148" height="148" viewBox="0 0 148 148" id="donutSvg"></svg>
+        <div class="chart-center"><div class="big" id="chartAmt">—</div><div class="sm">per month</div></div>
+      </div>
+      <div class="legend" id="legendBox"></div>
+    </div>
+
+    <!-- Personalized Advice -->
+    <div class="card">
+      <div class="s-label">Your financial game plan</div>
+      <div id="adviceBox"></div>
+      <div id="adviceSource" class="source-footer hidden">
+        Grounded in <a href="https://consumer.gov" target="_blank">CFPB Financial Well-Being Framework</a>, <a href="https://fdic.gov/moneysmart" target="_blank">FDIC Money Smart for Young Adults</a>, and JumpStart Coalition National Standards (2025).
+      </div>
+    </div>
+
+    <!-- Goal Planner -->
+    <div class="card">
+      <div class="s-label">Savings goal planner</div>
+      <div class="card-sub" style="margin-bottom:14px">Pick a goal, enter the amount, and see exactly how long it takes — and how much sooner you get there by saving more often.</div>
+      <div class="goal-grid">
+        <div class="goal-opt" onclick="selectGoal(this,'emergency')"><div class="g-icon">🆘</div><div class="g-label">Emergency Fund</div></div>
+        <div class="goal-opt" onclick="selectGoal(this,'car')"><div class="g-icon">🚗</div><div class="g-label">New Car</div></div>
+        <div class="goal-opt" onclick="selectGoal(this,'vacation')"><div class="g-icon">✈️</div><div class="g-label">Vacation</div></div>
+        <div class="goal-opt" onclick="selectGoal(this,'debt')"><div class="g-icon">💳</div><div class="g-label">Pay Off Debt</div></div>
+        <div class="goal-opt" onclick="selectGoal(this,'home')"><div class="g-icon">🏠</div><div class="g-label">Home Deposit</div></div>
+        <div class="goal-opt" onclick="selectGoal(this,'custom')"><div class="g-icon">⭐</div><div class="g-label">My Goal</div></div>
+      </div>
+      <div id="goalArea" class="hidden">
+        <div class="divider"></div>
+        <div class="input-row">
+          <label id="goalLbl">Target amount</label>
+          <div class="input-wrap"><span class="pfx">$</span>
+            <input type="number" id="goalAmt" placeholder="0" min="0" step="1" oninput="calcGoal()"/>
+          </div>
+        </div>
+        <div class="input-row">
+          <label>Amount you can set aside</label>
+          <div class="pill-group" style="margin-bottom:8px">
+            <button class="pill active" id="gf_w" onclick="setGoalFreq('weekly',this)">Weekly</button>
+            <button class="pill" id="gf_b" onclick="setGoalFreq('biweekly',this)">Every 2 wks</button>
+            <button class="pill" id="gf_m" onclick="setGoalFreq('monthly',this)">Monthly</button>
+          </div>
+          <div class="input-wrap"><span class="pfx">$</span>
+            <input type="number" id="goalContrib" placeholder="0" min="0" step="1" oninput="calcGoal()"/>
+          </div>
+        </div>
+        <div id="goalResult"></div>
+      </div>
+    </div>
+
+    <!-- Invest What-If -->
+    <div class="card">
+      <div class="s-label">What if you invested a little each month?</div>
+      <div class="invest-inner">
+        <div class="invest-title">The earlier you start, the bigger it grows 📈</div>
+        <div class="invest-sub">Move the slider to see how a small monthly investment could grow by age 65, using the S&P 500's historical average of 7%/year.</div>
+        <input type="range" id="investSlider" min="10" max="500" value="50" step="10" oninput="updateInvest()"/>
+        <div class="slider-ends"><span>$10 / mo</span><span>$500 / mo</span></div>
+        <div id="investRows"></div>
+      </div>
+      <div class="source-footer" style="margin-top:8px">Based on S&P 500 historical returns. Not a guarantee — an illustration of compound growth. Source: Vanguard · FDIC Money Smart</div>
+    </div>
+
+    <!-- Budget Plan Prompt -->
+    <div class="card" id="budgetPromptCard" style="text-align:center">
+      <div style="font-size:32px;margin-bottom:10px">📋</div>
+      <div class="card-title" style="font-size:18px;margin-bottom:6px">Want a proposed budget?</div>
+      <div class="card-sub" style="margin-bottom:20px">Based on everything you entered, we can build a clear, line-by-line budget showing exactly where your money should go — and where you have room to adjust.</div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-ghost" style="flex:1" onclick="dismissBudgetPlan()">No thanks</button>
+        <button class="btn-main" style="flex:2;margin-top:0" onclick="showBudgetPlan()">Yes, show me my plan →</button>
+      </div>
+    </div>
+
+    <!-- Budget Plan (hidden until requested) -->
+    <div id="budgetPlanSection" class="hidden"></div>
+
+    <button class="btn-ghost" style="width:100%;margin-top:4px" onclick="resetApp()">← Start over</button>
+  </div>
+</div>
+
+<script>
+let freq='weekly', goalFreq='weekly';
+let expenses=[], pendingCC=null;
+let _inc=0, _exp=0, _save=0;
+
+// ── Helpers ──
+const toMo=v=>freq==='weekly'?v*4.33:freq==='biweekly'?v*2.17:v;
+const goalToMo=v=>goalFreq==='weekly'?v*4.33:goalFreq==='biweekly'?v*2.17:v;
+const fmt=n=>'$'+Math.abs(n).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const moToStr=m=>{if(m<=0)return'—';const y=Math.floor(m/12),mo=m%12;const s=(y>0?y+'yr':'')+(y>0&&mo>0?' ':'')+(mo>0?mo+'mo':'');return s||'<1mo'};
+
+function setFreq(f,btn){freq=f;document.querySelectorAll('#step1 .pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function setGoalFreq(f,btn){goalFreq=f;document.querySelectorAll('#goalArea .pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');calcGoal()}
+
+function setProgress(step){
+  const pct=[25,50,75,100][step-1];
+  const labels=['Step 1 of 4 — Income','Step 2 of 4 — Expenses','Step 3 of 4 — Your Results','Step 4 of 4 — Your Plan'];
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('progressLabel').textContent=labels[step-1];
+}
+
+function goStep1(){['step1','step2','step3'].forEach(id=>document.getElementById(id).classList.toggle('hidden',id!=='step1'));setProgress(1)}
+function goStep2(){
+  const v=parseFloat(document.getElementById('income').value)||0;
+  if(v<=0){const el=document.getElementById('income');el.focus();el.style.borderColor='var(--red)';setTimeout(()=>el.style.borderColor='',1500);return}
+  document.getElementById('step1').classList.add('hidden');document.getElementById('step2').classList.remove('hidden');setProgress(2);
+}
+function resetApp(){
+  expenses=[];document.getElementById('income').value='';document.getElementById('income2').value='';
+  document.getElementById('expList').innerHTML='';goStep1();
+}
+
+// ── Expenses ──
+function addExpense(){
+  const cat=document.getElementById('expCat').value;
+  const amt=parseFloat(document.getElementById('expAmt').value)||0;
+  if(amt<=0)return;
+  document.getElementById('expAmt').value='';
+  if(cat.startsWith('💳 Credit')){pendingCC={cat,amt};document.getElementById('ccRate').value='';document.getElementById('ccModal').classList.remove('hidden')}
+  else{expenses.push({cat,amt,rate:null});renderExpenses()}
+}
+function confirmCC(use){
+  if(!pendingCC)return;
+  expenses.push({...pendingCC,rate:use?(parseFloat(document.getElementById('ccRate').value)||null):null});
+  pendingCC=null;document.getElementById('ccModal').classList.add('hidden');renderExpenses();
+}
+function removeExp(i){expenses.splice(i,1);renderExpenses()}
+function renderExpenses(){
+  document.getElementById('expList').innerHTML=expenses.map((e,i)=>{
+    const p=e.cat.split(' '),em=p[0],nm=p.slice(1).join(' ');
+    const isCC=e.cat.startsWith('💳');
+    return`<div class="exp-item${isCC?' cc':''}">
+      <span class="exp-emoji">${em}</span>
+      <span class="exp-name">${nm}${isCC&&e.rate?`<span class="exp-badge">${e.rate}% APR</span>`:''}</span>
+      <span class="exp-amt">${fmt(e.amt)}/mo</span>
+      <button class="exp-del" onclick="removeExp(${i})">×</button>
+    </div>`;
+  }).join('');
+}
+
+// ── Results ──
+function goStep3(){
+  const i1=parseFloat(document.getElementById('income').value)||0;
+  const i2=parseFloat(document.getElementById('income2').value)||0;
+  _inc=toMo(i1+i2);
+  _exp=expenses.reduce((s,e)=>s+e.amt,0);
+  const left=_inc-_exp, ratio=_exp/_inc;
+  document.getElementById('step2').classList.add('hidden');
+  document.getElementById('step3').classList.remove('hidden');
+  setProgress(3);
+
+  // Verdict
+  let vC,vE,vT,vM;
+  if(left<0){vC='bad';vE='⚠️';vT="Spending more than you earn";vM=`You're ${fmt(Math.abs(left))} over budget each month. The good news: you can see it now and change it. Your game plan is below.`}
+  else if(ratio>0.85){vC='tight';vE='👀';vT="Your budget is tight";vM=`You have ${fmt(left)} left after expenses — just ${Math.round((1-ratio)*100)}% of your income. Small adjustments now will give you breathing room.`}
+  else{vC='good';vE='✦';vT="You're in control";vM=`You have ${fmt(left)} left each month — ${Math.round((1-ratio)*100)}% of your income. You're in a solid position. Now let's put that money to work.`}
+  document.getElementById('verdictBox').innerHTML=`
+    <div class="verdict ${vC}">
+      <div class="v-top"><span class="v-emoji">${vE}</span><div class="v-title">${vT}</div></div>
+      <div class="v-msg">${vM}</div>
+    </div>`;
+
+  document.getElementById('r_inc').textContent=fmt(_inc);
+  document.getElementById('r_exp').textContent=fmt(_exp);
+  const lo=document.getElementById('r_left');
+  lo.textContent=(left<0?'-':'+')+fmt(left);lo.className=left>=0?'pos':'neg';
+
+  // Budget split
+  let nP,wP,sP;
+  if(left<0){nP=50;wP=30;sP=20}else if(ratio>0.85){nP=60;wP=20;sP=20}else if(ratio>0.65){nP=50;wP=30;sP=20}else{nP=45;wP=25;sP=30}
+  const nA=_inc*nP/100,wA=_inc*wP/100;_save=_inc*sP/100;
+  document.getElementById('chartAmt').textContent=fmt(_inc);
+  const r=56,cx=74,cy=74,circ=2*Math.PI*r;
+  const pcts=[nP,wP,sP],cols=['#2563eb','#e76f51','#2d6a4f'];
+  let off=0,paths='';
+  pcts.forEach((p,i)=>{const d=(p/100)*circ,g=circ-d;paths+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${cols[i]}" stroke-width="18" stroke-dasharray="${d} ${g}" stroke-dashoffset="${-off}"/>`;off+=d});
+  document.getElementById('donutSvg').innerHTML=paths;
+  const legLabels=['Needs — rent, food, bills','Wants — fun & lifestyle','Savings & goals'];
+  document.getElementById('legendBox').innerHTML=legLabels.map((l,i)=>`
+    <div class="leg-item">
+      <div class="leg-dot" style="background:${cols[i]}"></div>
+      <div class="leg-label">${l}</div>
+      <div class="leg-pct">${pcts[i]}%</div>
+      <div class="leg-amt">${fmt([nA,wA,_save][i])}</div>
+    </div>`).join('');
+
+  // CC Warning
+  const ccDebts=expenses.filter(e=>e.cat.startsWith('💳'));
+  buildCCWarning(ccDebts,left);
+
+  // Personalized advice
+  buildAdvice(_inc,_exp,left,ratio,_save,ccDebts);
+
+  // Invest + goal prefill
+  updateInvest();
+  document.getElementById('goalContrib').value=Math.max(1,Math.round(_save/4.33));
+}
+
+// ── CC Warning ──
+function buildCCWarning(ccDebts,leftover){
+  if(!ccDebts.length){document.getElementById('ccBox').innerHTML='';return}
+  const total=ccDebts.reduce((s,e)=>s+e.amt,0);
+  const rated=ccDebts.filter(e=>e.rate);
+  const avgRate=rated.length?rated.reduce((s,e)=>s+e.rate,0)/rated.length:null;
+  const estBal=total*24;
+  const moInterest=avgRate?estBal*(avgRate/100)/12:null;
+  const isOver=leftover<0, hasRoom=leftover>50, multiCard=ccDebts.length>1, highRate=avgRate&&avgRate>=18;
+
+  const all=[
+    {p:highRate?1:3,eli:highRate||avgRate===null,icon:'🏔️',
+     title:'Avalanche — highest rate first',
+     text:`Pay the minimum on every card, then put every extra dollar toward the highest-rate card.${avgRate?` At ${avgRate.toFixed(0)}% APR, interest alone is costing you roughly ${fmt(moInterest)}/month.`:''} Once that card is gone, roll that payment to the next one. This is the fastest path to paying less interest overall.`},
+    {p:multiCard?2:5,eli:multiCard,icon:'❄️',
+     title:'Snowball — smallest balance first',
+     text:`You have multiple cards — pay minimums on all of them, then throw extra at the one with the smallest balance. Paying off a full card feels like a real win and builds the motivation to keep going. Once it's cleared, roll that payment into the next card.`},
+    {p:hasRoom?2:6,eli:hasRoom&&!isOver,icon:'⚡',
+     title:'Pay more than the minimum',
+     text:`You have ${fmt(leftover)} left over each month. Putting even ${fmt(Math.min(leftover*0.4,150))} extra toward your card payment each month can cut your payoff time nearly in half. Minimum payments are designed to keep you in debt as long as possible.`},
+    {p:highRate?3:7,eli:highRate&&!isOver,icon:'🔄',
+     title:'Balance transfer — freeze the interest',
+     text:`At ${avgRate?avgRate.toFixed(0):20}% APR, a 0% balance transfer card could freeze your interest for 12–18 months. Every dollar you pay goes straight to the balance — not to interest. Look for cards with no transfer fee.`},
+    {p:isOver?1:8,eli:isOver,icon:'✂️',
+     title:'Cut spending to create payoff room',
+     text:`Your expenses exceed your income by ${fmt(Math.abs(leftover))}. Until that gap closes, paying down debt is almost impossible. Find one expense to reduce this week — even freeing up ${fmt(50)}/month creates real momentum.`},
+    {p:4,eli:true,icon:'🚫',
+     title:'Stop adding new charges',
+     text:`While you're paying a card down, avoid charging new purchases to it. Every new charge adds back what you're working to eliminate. Use a debit card for day-to-day spending while you're in payoff mode.`}
+  ];
+
+  const top3=all.filter(s=>s.eli).sort((a,b)=>a.p-b.p).slice(0,3);
+  const sub=avgRate
+    ?`You have ${fmt(total)}/month going to credit cards at an average ${avgRate.toFixed(0)}% interest rate — one of the most expensive kinds of debt. Here are the 3 strategies that best match your situation:`
+    :`You have ${fmt(total)}/month going to credit cards. Here are the 3 strategies that best fit where you are right now:`;
+
+  document.getElementById('ccBox').innerHTML=`
+    <div class="cc-box">
+      <div class="cc-head">Credit Card Debt Alert 💳</div>
+      <div class="cc-sub">${sub}</div>
+      ${top3.map(s=>`<div class="cc-strat"><div class="cs-icon">${s.icon}</div><div class="cs-body"><span class="cs-title">${s.title}</span>${s.text}</div></div>`).join('')}
+      <div class="cc-source">CFPB Debt Repayment Guide · FDIC Money Smart · consumer.gov</div>
+    </div>`;
+}
+
+// ── Personalized Advice ──
+function buildAdvice(inc,exp,left,ratio,save,ccDebts){
+  const box=document.getElementById('adviceBox');
+  const src=document.getElementById('adviceSource');
+  box.innerHTML=''; src.classList.add('hidden');
+
+  const hasCC=ccDebts.length>0;
+  const avgCCRate=hasCC?(ccDebts.filter(e=>e.rate).reduce((s,e)=>s+e.rate,0)/Math.max(ccDebts.filter(e=>e.rate).length,1)):0;
+  const isOver=left<0, isTight=ratio>0.85&&left>=0, isGood=!isOver&&!isTight;
+  const hasSide=(parseFloat(document.getElementById('income2').value)||0)>0;
+  const threeMonthFund=exp*3;
+  const emergencyMonths=Math.ceil(threeMonthFund/Math.max(save,1));
+
+  // Pool of possible advice items — each scored by relevance to this user
+  const pool=[
+
+    // LIVE WITHIN YOUR MEANS
+    {score:isOver?100:isTight?80:20, type:'danger', icon:'📊',
+     title:'Spend less than you earn — always',
+     text:`Right now your expenses ${isOver?`exceed your income by ${fmt(Math.abs(left))}`:`use ${Math.round(ratio*100)}% of your income`}. The single most important financial habit is keeping expenses below income. Try finding one expense to reduce by 10% this week.`,
+     action:'Review your top expense category',source:'CFPB Financial Well-Being Framework'},
+
+    {score:isTight?90:isOver?60:0, type:'caution', icon:'✂️',
+     title:'Find hidden spending',
+     text:`Subscriptions, eating out, and impulse buys quietly drain budgets. A 10% cut to discretionary spending on ${fmt(inc)} income would free up about ${fmt(inc*0.1)}/month — that's ${fmt(inc*0.1*12)}/year back in your pocket.`,
+     action:'List every subscription you pay for',source:'FDIC Money Smart'},
+
+    // EMERGENCY FUND
+    {score:isOver?30:isTight?70:90, type:'priority', icon:'🆘',
+     title:`Build a ${fmt(threeMonthFund)} safety net`,
+     text:`FDIC recommends 3–6 months of expenses as an emergency fund. Yours would be ${fmt(threeMonthFund)}. At ${fmt(save)}/month saved, you'd reach that in about ${emergencyMonths} months. This fund keeps you off credit cards when life surprises you.`,
+     action:`Open a separate "Emergency Fund" savings account`,source:'FDIC Money Smart 2025'},
+
+    {score:isGood&&!hasCC?85:40, type:'priority', icon:'🏦',
+     title:`Save ${fmt(save)} every month automatically`,
+     text:`Automating ${fmt(save)}/month the same day you get paid means you never have a chance to spend it. Over a year that's ${fmt(save*12)} set aside without thinking about it. Start with even half that amount if ${fmt(save)} feels like a stretch.`,
+     action:'Set up an auto-transfer on payday',source:'CFPB'},
+
+    // AVOID HIGH-INTEREST DEBT
+    {score:hasCC&&avgCCRate>=18?100:hasCC?80:0, type:'danger', icon:'⚠️',
+     title:'High-interest debt costs you daily',
+     text:`Credit card debt at ${avgCCRate>0?avgCCRate.toFixed(0):'20–29'}% APR is one of the most expensive financial traps there is. Every day you carry a balance, interest compounds. Paying off high-rate debt is the best guaranteed "return" on your money.`,
+     action:'Pay more than the minimum this month',source:'CFPB Debt Guide'},
+
+    {score:hasCC?70:10, type:'caution', icon:'💳',
+     title:'Build credit without carrying a balance',
+     text:`Use a credit card for one predictable bill — a subscription or gas — and pay the full balance every month. You build a credit history without paying a cent in interest. A good credit score can save you tens of thousands on future loans and housing.`,
+     action:'Set up auto-pay for your full balance',source:'FDIC Money Smart'},
+
+    // GOALS & GROWTH
+    {score:isGood?75:30, type:'priority', icon:'📈',
+     title:'Investing small beats waiting to invest big',
+     text:`Even ${fmt(Math.round(save*0.3))}/month invested in a simple index fund at 7% annual growth becomes ${fmt(Math.round(save*0.3*((Math.pow(1+0.07/12,45*12)-1)/(0.07/12))))} by age 65. The most powerful factor isn't how much — it's how early.`,
+     action:'Research a no-fee Roth IRA or index fund',source:'FDIC Money Smart · Vanguard'},
+
+    {score:!hasSide&&inc<2000?70:20, type:'caution', icon:'💼',
+     title:'A side income changes everything',
+     text:`At ${fmt(inc)}/month, adding even ${fmt(300)} from a side gig — tutoring, freelancing, reselling — would increase your budget by ${Math.round(300/inc*100)}%. It's not forever; it's breathing room now while you build your foundation.`,
+     action:'List 3 skills someone would pay you for',source:'JumpStart Coalition'},
+
+    {score:isGood?60:20, type:isGood?'priority':'caution', icon:'🎯',
+     title:'Pay yourself first, every time',
+     text:`Move your savings to a separate account the moment you get paid — before bills, before fun, before anything. What you don't see, you don't spend. This is the one habit that separates people who build wealth from those who wonder where their money went.`,
+     action:'Name a savings account "My Future"',source:'CFPB Financial Empowerment'},
+  ];
+
+  // Sort by score, pick top 4
+  const top4=pool.sort((a,b)=>b.score-a.score).slice(0,4);
+
+  box.innerHTML=top4.map(a=>`
+    <div class="advice-card ${a.type}">
+      <div class="ac-icon">${a.icon}</div>
+      <div class="ac-body">
+        <div class="ac-title">${a.title}</div>
+        <div class="ac-text">${a.text}</div>
+        <span class="ac-action">This week: ${a.action}</span>
+        <div class="ac-source">${a.source}</div>
+      </div>
+    </div>`).join('');
+
+  src.classList.remove('hidden');
+
+  // Try AI upgrade silently
+  upgradeWithAI(inc,exp,left,ratio,save,ccDebts,top4);
+}
+
+async function upgradeWithAI(inc,exp,left,ratio,save,ccDebts,currentTips){
+  try{
+    const isOver=left<0,isTight=ratio>0.85;
+    const hasCC=ccDebts.length>0;
+    const avgRate=hasCC?(ccDebts.filter(e=>e.rate).reduce((s,e)=>s+e.rate,0)/Math.max(ccDebts.filter(e=>e.rate).length,1)):null;
+    const prompt=`You are a concise financial coach for teens and young adults. Based on CFPB and FDIC Money Smart 2025 standards, give 4 short personalized tips.
+
+User data: income ${fmt(inc)}/mo, expenses ${fmt(exp)}/mo, left over ${fmt(left)}/mo (${isOver?'over budget':isTight?'tight':'healthy'}), suggested savings ${fmt(save)}/mo, credit card debt: ${hasCC?fmt(ccDebts.reduce((s,e)=>s+e.amt,0))+'/mo'+(avgRate?' at '+avgRate.toFixed(0)+'% APR':''):'none'}.
+
+Core themes to address (pick the 4 most relevant): live within means, build emergency fund (3 months expenses = ${fmt(exp*3)}), avoid high-interest debt, automate savings, build credit wisely.
+
+Rules: plain English only, no jargon. 2 sentences max per tip. Reference actual dollar amounts. End with one action for TODAY. Be encouraging, never judgmental.
+
+Return ONLY raw JSON array (no markdown):
+[{"icon":"emoji","title":"≤5 words","text":"2 sentences with $ amounts. One action today.","type":"priority|caution|danger","action":"do this today","source":"CFPB|FDIC Money Smart|JumpStart"}]`;
+
+    // Secure backend proxy — API key lives in Cloudflare, never in this file.
+    // Replace with your deployed Worker URL from WORKER_SETUP.md
+    const WORKER_URL='https://budgr-api.jlarraondo.workers.dev';
+
+    const res=await fetch(WORKER_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:[{role:'user',content:prompt}]})
+    });
+    if(!res.ok)return;
+    const data=await res.json();
+    const raw=(data.content||[]).map(c=>c.text||'').join('').trim().replace(/^```[\w]*\n?/,'').replace(/```$/,'').trim();
+    const tips=JSON.parse(raw);
+    if(!Array.isArray(tips)||!tips.length)return;
+    document.getElementById('adviceBox').innerHTML=tips.map(a=>`
+      <div class="advice-card ${a.type||''}">
+        <div class="ac-icon">${a.icon||'💡'}</div>
+        <div class="ac-body">
+          <div class="ac-title">${a.title||''}</div>
+          <div class="ac-text">${a.text||''}</div>
+          <span class="ac-action">This week: ${a.action||''}</span>
+          <div class="ac-source">${a.source||''}</div>
+        </div>
+      </div>`).join('');
+  }catch(e){}
+}
+
+// ── Goal Planner ──
+const goalHints={
+  emergency:'FDIC recommends 3–6 months of expenses. Yours would be '+fmt(0)+'.',
+  car:'Enter the car price or down payment needed.',
+  vacation:'Enter your total trip budget.',
+  debt:'Enter the total balance you want to eliminate.',
+  home:'A 3.5–10% down payment on a starter home.',
+  custom:'Any amount you want to reach.'
+};
+function selectGoal(el,key){
+  document.querySelectorAll('.goal-opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('goalArea').classList.remove('hidden');
+  const hint=key==='emergency'?`FDIC recommends 3–6 months of expenses as a safety net. Yours = ${fmt(_exp*3)}.`:goalHints[key];
+  document.getElementById('goalLbl').textContent='Target amount — '+hint;
+  if(key==='emergency'&&_exp>0)document.getElementById('goalAmt').value=Math.round(_exp*3);
+  calcGoal();
+}
+function calcGoal(){
+  const target=parseFloat(document.getElementById('goalAmt').value)||0;
+  const contrib=parseFloat(document.getElementById('goalContrib').value)||0;
+  if(!target||!contrib){document.getElementById('goalResult').innerHTML='';return}
+  const mo=goalToMo(contrib);
+  const months=Math.ceil(target/mo);
+  const mW=Math.ceil(target/(contrib*4.33)),mB=Math.ceil(target/(contrib*2.17)),mM=Math.ceil(target/contrib);
+  const barPct=Math.min((mo/target)*100*3,100);
+  const freqLbl=goalFreq==='weekly'?`${fmt(contrib)}/week`:goalFreq==='biweekly'?`${fmt(contrib)}/2wks`:`${fmt(contrib)}/mo`;
+  document.getElementById('goalResult').innerHTML=`
+    <div class="goal-result">
+      <div class="gr-title">Your savings timeline</div>
+      <div class="g-stat"><span>Goal</span><strong>${fmt(target)}</strong></div>
+      <div class="g-stat"><span>Contributing</span><strong>${freqLbl} — ${fmt(mo)}/mo</strong></div>
+      <div class="g-stat"><span>Time to reach it</span><strong>${moToStr(months)}</strong></div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${barPct}%"></div></div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:10px">Same ${fmt(contrib)}, paid more often = you get there faster</div>
+      <div class="freq-compare">
+        ${[{f:'weekly',m:mW,lbl:'Weekly 📅'},{f:'biweekly',m:mB,lbl:'Every 2 weeks 🗓️'},{f:'monthly',m:mM,lbl:'Monthly 📆'}].map(r=>`
+          <div class="fc-row${goalFreq===r.f?' active':''}">
+            <span class="fc-label">${r.lbl}</span>
+            <span class="fc-time">${moToStr(r.m)}</span>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ── Budget Plan ──
+function dismissBudgetPlan(){
+  document.getElementById('budgetPromptCard').classList.add('hidden');
+}
+
+function showBudgetPlan(){
+  document.getElementById('budgetPromptCard').classList.add('hidden');
+  setProgress(4);
+  buildBudgetPlan();
+  document.getElementById('budgetPlanSection').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('budgetPlanSection').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function buildBudgetPlan(){
+  const left=_inc-_exp;
+  const isOver=left<0, isTight=(_exp/_inc)>0.85;
+  const hasCC=expenses.some(e=>e.cat.startsWith('💳'));
+
+  // Target allocations based on CFPB/FDIC guidelines
+  let targetSavePct=isOver?0.10:isTight?0.15:0.20;
+  let targetEmergencyPct=0.05; // always carve out at least 5% toward emergency fund
+  let remainForExp=_inc*(1-targetSavePct-targetEmergencyPct);
+
+  // Categorize expenses into groups
+  const groups={
+    'Essential — Housing & Utilities':{emoji:'🏠',budget:_inc*0.30,items:[],targetPct:.30},
+    'Essential — Food':{emoji:'🍽️',budget:_inc*0.12,items:[],targetPct:.12},
+    'Essential — Transportation':{emoji:'🚗',budget:_inc*0.15,items:[],targetPct:.15},
+    'Debt Payments':{emoji:'💳',budget:_inc*0.10,items:[],targetPct:.10},
+    'Lifestyle & Wants':{emoji:'🎯',budget:_inc*0.10,items:[],targetPct:.10},
+    'Communication':{emoji:'📱',budget:_inc*0.04,items:[],targetPct:.04},
+  };
+
+  const catMap={
+    '🏠':0,'💡':0,'🔥':0,'💧':0,
+    '🛒':1,'🍔':1,
+    '🚗':2,'⛽':2,'🛡️':2,'🔧':2,'🚌':2,
+    '💳':3,'🎓':3,
+    '🎮':4,'📺':4,'👗':4,'💊':4,'🏋️':4,'📚':4,'✏️':4,
+    '📱':5,'🌐':5,
+  };
+  const gKeys=Object.keys(groups);
+  expenses.forEach(e=>{
+    const em=e.cat.split(' ')[0];
+    const gIdx=catMap[em]??4;
+    groups[gKeys[gIdx]].items.push(e);
+  });
+
+  // Build proposed amounts per category
+  const proposed={};
+  Object.entries(groups).forEach(([name,g])=>{
+    const actual=g.items.reduce((s,e)=>s+e.amt,0);
+    const target=g.budget;
+    if(actual===0){proposed[name]=0;return}
+    // If actual > target suggest reduction, if under keep it
+    proposed[name]=actual>target?Math.round(target):actual;
+  });
+
+  // Calculate proposed savings
+  const totalProposedExp=Object.values(proposed).reduce((s,v)=>s+v,0);
+  const proposedLeft=_inc-totalProposedExp;
+  const proposedSavings=Math.max(0,Math.round(proposedLeft*0.70));
+  const proposedEmergency=Math.max(0,Math.round(proposedLeft*0.20));
+  const proposedDiscretionary=Math.max(0,proposedLeft-proposedSavings-proposedEmergency);
+
+  // Build HTML
+  let sectionsHTML='';
+  Object.entries(groups).forEach(([name,g])=>{
+    const actual=g.items.reduce((s,e)=>s+e.amt,0);
+    if(!g.items.length)return;
+    const prop=proposed[name];
+    const over=actual>g.budget;
+    sectionsHTML+=`
+      <div class="bp-section">
+        <div class="bp-section-label">
+          <span>${g.emoji} ${name}</span>
+          <span>Budget: ${fmt(g.budget)}/mo</span>
+        </div>
+        ${g.items.map(e=>{
+          const em=e.cat.split(' ')[0], nm=e.cat.split(' ').slice(1).join(' ');
+          const itemTarget=Math.round(e.amt*(prop/Math.max(actual,1)));
+          const diff=e.amt-itemTarget;
+          const pClass=diff>5?'cut':diff<-5?'ok':'same';
+          const tag=diff>5?`<span class="bp-tag reduce">↓ reduce</span>`:diff<-5?`<span class="bp-tag keep">✓ on track</span>`:`<span class="bp-tag keep">✓ keep</span>`;
+          return`<div class="bp-row">
+            <span class="bp-emoji">${em}</span>
+            <span class="bp-name">${nm}</span>
+            <span class="bp-current">${fmt(e.amt)}</span>
+            <span class="bp-arrow">→</span>
+            <span class="bp-proposed ${pClass}">${fmt(itemTarget)}</span>
+            ${tag}
+          </div>`;
+        }).join('')}
+        ${over?`<div style="font-size:11px;color:var(--red);padding:6px 0 2px;line-height:1.5">⚠️ This category is ${fmt(actual-g.budget)} over the recommended limit. Try reducing the items marked "reduce."</div>`:''}
+      </div>`;
+  });
+
+  // Savings section
+  sectionsHTML+=`
+    <div class="bp-section">
+      <div class="bp-section-label"><span>💰 Proposed Savings & Priorities</span><span>From leftover income</span></div>
+      <div class="bp-row">
+        <span class="bp-emoji">🆘</span>
+        <span class="bp-name">Emergency Fund <span class="bp-tag priority">Priority #1</span></span>
+        <span class="bp-current">—</span>
+        <span class="bp-arrow">→</span>
+        <span class="bp-proposed ok">${fmt(proposedEmergency)}</span>
+      </div>
+      <div class="bp-row">
+        <span class="bp-emoji">🏦</span>
+        <span class="bp-name">Savings / Goals <span class="bp-tag keep">Build wealth</span></span>
+        <span class="bp-current">—</span>
+        <span class="bp-arrow">→</span>
+        <span class="bp-proposed ok">${fmt(proposedSavings)}</span>
+      </div>
+      ${proposedDiscretionary>0?`<div class="bp-row">
+        <span class="bp-emoji">🎉</span>
+        <span class="bp-name">Flexible spending</span>
+        <span class="bp-current">—</span>
+        <span class="bp-arrow">→</span>
+        <span class="bp-proposed same">${fmt(proposedDiscretionary)}</span>
+      </div>`:''}
+    </div>`;
+
+  const totalCuts=_exp-totalProposedExp;
+  const statusColor=proposedLeft>=0?'var(--accent)':'var(--red)';
+
+  const planHTML=`
+    <div>
+      <div class="bp-header">
+        <div class="bp-header-title">Your Proposed Budget Plan</div>
+        <div class="bp-header-sub">Based on your income of ${fmt(_inc)}/month · Grounded in CFPB & FDIC Money Smart guidelines</div>
+      </div>
+      <div class="bp-body">
+        ${sectionsHTML}
+        <div class="bp-summary">
+          <div class="bp-sum-row"><span>Monthly income</span><span>${fmt(_inc)}</span></div>
+          <div class="bp-sum-row"><span>Current total expenses</span><span>${fmt(_exp)}</span></div>
+          <div class="bp-sum-row"><span>Proposed total expenses</span><span>${fmt(totalProposedExp)}</span></div>
+          ${totalCuts>0?`<div class="bp-sum-row"><span>Potential monthly savings</span><span style="color:var(--accent)">+${fmt(totalCuts)}</span></div>`:''}
+          <div class="bp-sum-row total"><span>Proposed left over</span><span style="color:${statusColor}">${proposedLeft>=0?'+':''}${fmt(proposedLeft)}</span></div>
+          <div class="bp-note">
+            <strong style="color:var(--text)">How to use this plan:</strong> The amounts above are targets, not rules. Start with one change — pick one "reduce" item and lower it this month. Small adjustments compound over time.
+            <br/><br/>
+            <span class="bp-pill green">✓ Keep — already in a healthy range</span>
+            <span class="bp-pill red">↓ Reduce — above recommended limit</span>
+            <span class="bp-pill yellow">★ Priority — fund this first</span>
+            <br/><br/>
+            Source: <a href="https://consumer.gov" target="_blank" style="color:var(--accent)">CFPB</a> · <a href="https://fdic.gov/moneysmart" target="_blank" style="color:var(--accent)">FDIC Money Smart for Young Adults</a>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('budgetPlanSection').innerHTML=planHTML;
+}
+
+function updateInvest(){
+  const mo=parseInt(document.getElementById('investSlider')?.value||50);
+  const months=45*12,r=0.07/12,fv=mo*((Math.pow(1+r,months)-1)/r),total=mo*months;
+  document.getElementById('investRows').innerHTML=`
+    <div class="inv-row"><span>Monthly investment</span><strong>${fmt(mo)}</strong></div>
+    <div class="inv-row"><span>Total you put in</span><strong>${fmt(total)}</strong></div>
+    <div class="inv-row"><span>Growth from returns</span><strong style="color:var(--accent)">${fmt(fv-total)}</strong></div>
+    <div class="inv-total"><span>Total at age 65</span><strong>${fmt(fv)}</strong></div>`;
+}
+</script>
+</body>
+</html>

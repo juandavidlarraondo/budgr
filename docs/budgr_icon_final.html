@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #131310; display: flex; flex-direction: column; align-items: center; padding: 48px 24px 80px; font-family: 'DM Sans', sans-serif; gap: 40px; }
+  .page-title { color: #f5f4f0; font-family: 'DM Serif Display', serif; font-size: 24px; letter-spacing: -.3px; text-align: center; }
+  .page-sub { color: #8a887e; font-size: 13px; margin-top: 5px; text-align: center; }
+  .row { display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap; justify-content: center; }
+  .item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .lbl { color: #8a887e; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .on-light { background: #f0efe9; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .on-dark  { background: #0f0f13; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; border: 1px solid #2a2a36; }
+  .on-grey  { background: #e8e6e0; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .notes { max-width: 540px; background: #1a1917; border: 1px solid #2a2a36; border-radius: 20px; padding: 26px; width: 100%; }
+  .nt { color: #f5f4f0; font-size: 13px; font-weight: 600; margin-bottom: 14px; }
+  .nr { display: flex; gap: 10px; margin-bottom: 8px; align-items: flex-start; }
+  .nr:last-child { margin-bottom: 0; }
+  .nk { color: #6aab85; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; min-width: 88px; padding-top: 1px; }
+  .nv { color: #8a887e; font-size: 12px; line-height: 1.7; }
+  .hex { display: inline-block; background: #2a2a36; border-radius: 4px; padding: 1px 7px; font-size: 11px; color: #a8d9bc; font-weight: 600; letter-spacing: .3px; margin-left: 4px; }
+  .section-title { color: #8a887e; font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div>
+  <div class="page-title">budgr — Final App Icon</div>
+  <div class="page-sub">Shield + Sprout · Production Ready · Soft Sage Palette</div>
+</div>
+
+<!-- All sizes -->
+<div class="row">
+
+  <!-- Hero 1024 -->
+  <div class="item">
+    <svg width="300" height="300" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#82c49e"/>
+          <stop offset="100%" style="stop-color:#4e9270"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="32%" cy="26%" r="58%">
+          <stop offset="0%" style="stop-color:#b0dfc2;stop-opacity:.55"/>
+          <stop offset="100%" style="stop-color:#4e9270;stop-opacity:0"/>
+        </radialGradient>
+        <radialGradient id="innershadow" cx="68%" cy="74%" r="50%">
+          <stop offset="0%" style="stop-color:#3a7358;stop-opacity:.35"/>
+          <stop offset="100%" style="stop-color:#4e9270;stop-opacity:0"/>
+        </radialGradient>
+        <linearGradient id="shield_stroke" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#ffffff;stop-opacity:.95"/>
+          <stop offset="100%" style="stop-color:#ffffff;stop-opacity:.7"/>
+        </linearGradient>
+        <linearGradient id="stem_grad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:#ffffff;stop-opacity:.8"/>
+          <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient id="dot_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f7b28a"/>
+          <stop offset="100%" style="stop-color:#e46a42"/>
+        </linearGradient>
+        <filter id="softshadow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#2a6648" flood-opacity="0.25"/>
+        </filter>
+      </defs>
+
+      <!-- Background -->
+      <rect width="1024" height="1024" rx="224" fill="url(#bg)"/>
+      <!-- Top-left highlight -->
+      <rect width="1024" height="1024" rx="224" fill="url(#glow)"/>
+      <!-- Bottom-right depth -->
+      <rect width="1024" height="1024" rx="224" fill="url(#innershadow)"/>
+
+      <!-- Shield — refined geometry, taller, elegant proportions -->
+      <!-- Shield path: top flat, sides angled in, bottom pointed -->
+      <path d="M 512 168
+               L 794 278
+               L 794 526
+               Q 794 672 512 856
+               Q 230 672 230 526
+               L 230 278
+               Z"
+        fill="none"
+        stroke="url(#shield_stroke)"
+        stroke-width="46"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        filter="url(#softshadow)"/>
+
+      <!-- Shield inner highlight — top edge glow -->
+      <path d="M 512 168 L 794 278"
+        fill="none" stroke="#ffffff" stroke-width="46"
+        stroke-linecap="round" opacity="1"/>
+      <path d="M 512 168 L 230 278"
+        fill="none" stroke="#ffffff" stroke-width="46"
+        stroke-linecap="round" opacity="1"/>
+
+      <!-- Sprout stem — centered, clean -->
+      <line x1="512" y1="706"
+            x2="512" y2="390"
+            stroke="#f5f4f0" stroke-width="40"
+            stroke-linecap="round"/>
+
+      <!-- Left leaf — flowing, organic curve -->
+      <path d="M 512 582
+               C 480 550 400 530 358 448
+               C 400 420 480 448 512 510"
+        fill="#f5f4f0" opacity="1"/>
+
+      <!-- Right leaf — slightly higher, elegant offset -->
+      <path d="M 512 490
+               C 544 455 626 438 668 352
+               C 626 328 542 358 512 428"
+        fill="#f5f4f0" opacity="0.72"/>
+
+      <!-- Tiny third leaf bud — top, suggests ongoing growth -->
+      <path d="M 512 398
+               C 512 370 530 348 548 338
+               C 548 362 534 382 512 390"
+        fill="#f5f4f0" opacity="0.5"/>
+
+      <!-- Terracotta base — warm anchor dot -->
+      <circle cx="512" cy="718" r="50" fill="url(#dot_grad)"/>
+      <!-- Highlight on dot -->
+      <circle cx="496" cy="703" r="16" fill="#ffffff" opacity="0.28"/>
+
+    </svg>
+    <div class="lbl">1024 × 1024 — App Store</div>
+  </div>
+
+</div>
+
+<!-- Size previews row -->
+<div class="section-title">All required sizes</div>
+<div class="row">
+
+  <!-- 180px iPhone @3x -->
+  <div class="item">
+    <svg width="180" height="180" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg_180" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#82c49e"/>
+          <stop offset="100%" style="stop-color:#4e9270"/>
+        </linearGradient>
+        <radialGradient id="glow_180" cx="32%" cy="26%" r="58%">
+          <stop offset="0%" style="stop-color:#b0dfc2;stop-opacity:.5"/>
+          <stop offset="100%" style="stop-color:#4e9270;stop-opacity:0"/>
+        </radialGradient>
+        <linearGradient id="dot_180" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f7b28a"/>
+          <stop offset="100%" style="stop-color:#e46a42"/>
+        </linearGradient>
+      </defs>
+      <rect width="1024" height="1024" rx="224" fill="url(#bg_180)"/>
+      <rect width="1024" height="1024" rx="224" fill="url(#glow_180)"/>
+      <path d="M 512 168 L 794 278 L 794 526 Q 794 672 512 856 Q 230 672 230 526 L 230 278 Z" fill="none" stroke="#ffffff" stroke-width="46" stroke-linejoin="round" stroke-linecap="round" opacity=".9"/>
+      <line x1="512" y1="706" x2="512" y2="390" stroke="#f5f4f0" stroke-width="40" stroke-linecap="round"/>
+      <path d="M 512 582 C 480 550 400 530 358 448 C 400 420 480 448 512 510" fill="#f5f4f0"/>
+      <path d="M 512 490 C 544 455 626 438 668 352 C 626 328 542 358 512 428" fill="#f5f4f0" opacity="0.72"/>
+      <path d="M 512 398 C 512 370 530 348 548 338 C 548 362 534 382 512 390" fill="#f5f4f0" opacity="0.5"/>
+      <circle cx="512" cy="718" r="50" fill="url(#dot_180)"/>
+    </svg>
+    <div class="lbl">180px · iPhone @3x</div>
+  </div>
+
+  <!-- 120px iPhone @2x -->
+  <div class="item">
+    <svg width="120" height="120" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg_120" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#82c49e"/>
+          <stop offset="100%" style="stop-color:#4e9270"/>
+        </linearGradient>
+        <linearGradient id="dot_120" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f7b28a"/>
+          <stop offset="100%" style="stop-color:#e46a42"/>
+        </linearGradient>
+      </defs>
+      <rect width="1024" height="1024" rx="224" fill="url(#bg_120)"/>
+      <path d="M 512 168 L 794 278 L 794 526 Q 794 672 512 856 Q 230 672 230 526 L 230 278 Z" fill="none" stroke="#ffffff" stroke-width="50" stroke-linejoin="round" opacity=".9"/>
+      <line x1="512" y1="706" x2="512" y2="390" stroke="#f5f4f0" stroke-width="44" stroke-linecap="round"/>
+      <path d="M 512 582 C 480 550 400 530 358 448 C 400 420 480 448 512 510" fill="#f5f4f0"/>
+      <path d="M 512 490 C 544 455 626 438 668 352 C 626 328 542 358 512 428" fill="#f5f4f0" opacity="0.72"/>
+      <circle cx="512" cy="718" r="54" fill="url(#dot_120)"/>
+    </svg>
+    <div class="lbl">120px · Home screen</div>
+  </div>
+
+  <!-- 87px Spotlight -->
+  <div class="item">
+    <svg width="87" height="87" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg_87" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#82c49e"/>
+          <stop offset="100%" style="stop-color:#4e9270"/>
+        </linearGradient>
+        <linearGradient id="dot_87" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f7b28a"/>
+          <stop offset="100%" style="stop-color:#e46a42"/>
+        </linearGradient>
+      </defs>
+      <rect width="1024" height="1024" rx="224" fill="url(#bg_87)"/>
+      <path d="M 512 168 L 794 278 L 794 526 Q 794 672 512 856 Q 230 672 230 526 L 230 278 Z" fill="none" stroke="#ffffff" stroke-width="54" stroke-linejoin="round" opacity=".9"/>
+      <line x1="512" y1="706" x2="512" y2="390" stroke="#f5f4f0" stroke-width="48" stroke-linecap="round"/>
+      <path d="M 512 582 C 480 550 400 530 358 448 C 400 420 480 448 512 510" fill="#f5f4f0"/>
+      <circle cx="512" cy="718" r="58" fill="url(#dot_87)"/>
+    </svg>
+    <div class="lbl">87px · Spotlight</div>
+  </div>
+
+  <!-- 60px notification -->
+  <div class="item">
+    <svg width="60" height="60" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg_60" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#82c49e"/>
+          <stop offset="100%" style="stop-color:#4e9270"/>
+        </linearGradient>
+        <linearGradient id="dot_60" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f7b28a"/>
+          <stop offset="100%" style="stop-color:#e46a42"/>
+        </linearGradient>
+      </defs>
+      <rect width="1024" height="1024" rx="224" fill="url(#bg_60)"/>
+      <path d="M 512 168 L 794 278 L 794 526 Q 794 672 512 856 Q 230 672 230 526 L 230 278 Z" fill="none" stroke="#ffffff" stroke-width="60" stroke-linejoin="round" opacity=".9"/>
+      <line x1="512" y1="706" x2="512" y2="390" stroke="#f5f4f0" stroke-width="52" stroke-linecap="round"/>
+      <path d="M 512 582 C 480 550 400 530 358 448 C 400 420 480 448 512 510" fill="#f5f4f0"/>
+      <circle cx="512" cy="718" r="62" fill="url(#dot_60)"/>
+    </svg>
+    <div class="lbl">60px · Notification</div>
+  </div>
+
+</div>
+
+<!-- Context previews -->
+<div class="section-title">On different backgrounds</div>
+<div class="row">
+
+  <div class="item">
+    <div class="on-light">
+      <svg width="100" height="100" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bg_ol" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#82c49e"/>
+            <stop offset="100%" style="stop-color:#4e9270"/>
+          </linearGradient>
+          <radialGradient id="glow_ol" cx="32%" cy="26%" r="58%">
+            <stop offset="0%" style="stop-color:#b0dfc2;stop-opacity:.5"/>
+            <stop offset="100%" style="stop-color:#4e9270;stop-opacity:0"/>
+          </radialGradient>
+          <linearGradient id="dot_ol" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f7b28a"/>
+            <stop offset="100%" style="stop-color:#e46a42"/>
+          </linearGradient>
+        </defs>
+        <rect width="1024" height="1024" rx="224" fill="url(#bg_ol)"/>
+        <rect width="1024" height="1024" rx="224" fill="url(#glow_ol)"/>
+        <path d="M 512 168 L 794 278 L 794 526 Q 794 672 512 856 Q 230 672 230 526 L 230 278 Z" fill="none" stroke="#ffffff" stroke-width="46" stroke-linejoin="round" opacity=".9"/>
+        <line x1="512" y1="706" x2="512" y2="390" stroke="#f5f4f0" stroke-width="40" stroke-linecap="round"/>
+        <path d="M 512 582 C 480 550 400 530 358 448 C 400 420 480 448 512 510" fill="#f5f4f0"/>
+        <path d="M 512 490 C 544 455 626 438 668 352 C 626 328 542 358 512 428" fill="#f5f4f0" opacity="0.72"/>
+        <path d="M 512 398 C 512 370 530 348 548 338 C 548 362 534 382 512 390" fill="#f5f4f0" opacity="0.5"/>
+        <circle cx="512" cy="718" r="50" fill="url(#dot_ol)"/>
+      </svg>
+      <div class="lbl" style="color:#aaa8a0">Light wallpaper</div>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="on-dark">
+      <svg width="100" height="100" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bg_od" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#82c49e"/>
+            <stop offset="100%" style="stop-color:#4e9270"/>
+          </linearGradient>
+          <radialGradient id="glow_od" cx="32%" cy="26%" r="58%">
+            <stop offset="0%" style="stop-color:#b0dfc2;stop-opacity:.5"/>
+            <stop offset="100%" style="stop-color:#4e9270;stop-opacity:0"/>
+          </radialGradient>
+          <linearGradient id="dot_od" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f7b28a"/>
+            <stop offset="100%" style="stop-color:#e46a42"/>
+          </linearGradient>
+        </defs>
+        <rect width="1024" height="1024" rx="224" fill="url(#bg_od)"/>
+        <rect width="1024" height="1024" rx="224" fill="url(#glow_od)"/>
+        <path d="M 512 168 L 794 278 L 794 526 Q 794 672 512 856 Q 230 672 230 526 L 230 278 Z" fill="none" stroke="#ffffff" stroke-width="46" stroke-linejoin="round" opacity=".9"/>
+        <line x1="512" y1="706" x2="512" y2="390" stroke="#f5f4f0" stroke-width="40" stroke-linecap="round"/>
+        <path d="M 512 582 C 480 550 400 530 358 448 C 400 420 480 448 512 510" fill="#f5f4f0"/>
+        <path d="M 512 490 C 544 455 626 438 668 352 C 626 328 542 358 512 428" fill="#f5f4f0" opacity="0.72"/>
+        <path d="M 512 398 C 512 370 530 348 548 338 C 548 362 534 382 512 390" fill="#f5f4f0" opacity="0.5"/>
+        <circle cx="512" cy="718" r="50" fill="url(#dot_od)"/>
+      </svg>
+      <div class="lbl">Dark wallpaper</div>
+    </div>
+  </div>
+
+  <div class="item">
+    <div class="on-grey">
+      <svg width="100" height="100" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bg_og" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#82c49e"/>
+            <stop offset="100%" style="stop-color:#4e9270"/>
+          </linearGradient>
+          <radialGradient id="glow_og" cx="32%" cy="26%" r="58%">
+            <stop offset="0%" style="stop-color:#b0dfc2;stop-opacity:.5"/>
+            <stop offset="100%" style="stop-color:#4e9270;stop-opacity:0"/>
+          </radialGradient>
+          <linearGradient id="dot_og" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f7b28a"/>
+            <stop offset="100%" style="stop-color:#e46a42"/>
+          </linearGradient>
+        </defs>
+        <rect width="1024" height="1024" rx="224" fill="url(#bg_og)"/>
+        <rect width="1024" height="1024" rx="224" fill="url(#glow_og)"/>
+        <path d="M 512 168 L 794 278 L 794 526 Q 794 672 512 856 Q 230 672 230 526 L 230 278 Z" fill="none" stroke="#ffffff" stroke-width="46" stroke-linejoin="round" opacity=".9"/>
+        <line x1="512" y1="706" x2="512" y2="390" stroke="#f5f4f0" stroke-width="40" stroke-linecap="round"/>
+        <path d="M 512 582 C 480 550 400 530 358 448 C 400 420 480 448 512 510" fill="#f5f4f0"/>
+        <path d="M 512 490 C 544 455 626 438 668 352 C 626 328 542 358 512 428" fill="#f5f4f0" opacity="0.72"/>
+        <path d="M 512 398 C 512 370 530 348 548 338 C 548 362 534 382 512 390" fill="#f5f4f0" opacity="0.5"/>
+        <circle cx="512" cy="718" r="50" fill="url(#dot_og)"/>
+      </svg>
+      <div class="lbl" style="color:#aaa8a0">Grey wallpaper</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Design spec -->
+<div class="notes">
+  <div class="nt">Production Design Spec</div>
+  <div class="nr"><span class="nk">Background</span><span class="nv">Soft sage gradient <span class="hex">#82c49e</span> → <span class="hex">#4e9270</span> · Top-left radial highlight adds depth without shadows</span></div>
+  <div class="nr"><span class="nk">Shield</span><span class="nv">46px white stroke, 90% opacity · Rounded joins · Tapers to a point at the base · Universally reads as protection and control</span></div>
+  <div class="nr"><span class="nk">Sprout</span><span class="nv">3-element composition: main left leaf (100% opacity), secondary right leaf (72%), tiny bud tip (50%) · Creates visual depth and suggests ongoing growth</span></div>
+  <div class="nr"><span class="nk">Stem</span><span class="nv">40px centered vertical line · Anchors the sprout, provides visual spine inside the shield</span></div>
+  <div class="nr"><span class="nk">Accent dot</span><span class="nv">Terracotta <span class="hex">#f7b28a</span> → <span class="hex">#e46a42</span> · Base of stem · Reads as soil / warmth / foundation · Inner highlight at 28% white</span></div>
+  <div class="nr"><span class="nk">Scale notes</span><span class="nv">At 60px: shield outline + stem + left leaf + dot all remain clear · Right leaf and bud drop out gracefully · No detail loss at any required iOS size</span></div>
+  <div class="nr"><span class="nk">To export</span><span class="nv">Open in browser → Right-click the large icon → Copy as PNG, or recreate in Figma/Canva using these exact hex values at 1024×1024px with no transparency and no rounded corners on the canvas (Apple adds the rounding)</span></div>
+</div>
+
+</body>
+</html>

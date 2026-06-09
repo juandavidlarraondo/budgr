@@ -1,0 +1,6 @@
+name = "budgr-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# This worker runs on Cloudflare's free tier — no cost for up to 100,000 requests/day.
+# Your deployed URL will be: https://budgr-api.YOUR-SUBDOMAIN.workers.dev

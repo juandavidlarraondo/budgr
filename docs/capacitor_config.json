@@ -1,0 +1,33 @@
+{
+  "appId": "com.yourname.budgr",
+  "appName": "budgr",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#f5f4f0",
+    "allowsLinkPreview": false
+  },
+  "android": {
+    "backgroundColor": "#f5f4f0",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#f5f4f0",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#f5f4f0"
+    }
+  }
+}
