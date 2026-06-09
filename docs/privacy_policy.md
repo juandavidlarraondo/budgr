@@ -87,7 +87,7 @@ Because budgr does not store your financial data on our servers — or any serve
 
 ## 9. Changes to This Policy
 
-If we update this privacy policy, we will update the "Last Updated" date at the top of this document and post the new version to https://juandavidlarraondo.github.io/budgr/privacy. Continued use of the app after changes constitutes acceptance of the updated policy.
+If we update this privacy policy, we will update the "Last Updated" date at the top of this document and post the new version to https://jdlarraondo-dot.github.io/budgr/privacy. Continued use of the app after changes constitutes acceptance of the updated policy.
 
 ---
 
@@ -97,7 +97,7 @@ If you have questions about this privacy policy or how budgr handles data, pleas
 
 **Juan David Larraondo**
 **Email:** jdlarraondo@gmail.com
-**Website:** juandavidlarraondo.github.io/budgr
+**Website:** jdlarraondo-dot.github.io/budgr
 
 ---
 

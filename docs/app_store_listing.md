@@ -131,7 +131,7 @@ Version 1.0 — Initial Release
 `mailto:jdlarraondo@gmail.com`
 
 ## PRIVACY POLICY URL
-`https://juandavidlarraondo.github.io/budgr/privacy`
+`https://jdlarraondo-dot.github.io/budgr/privacy`
 
 ---
 
