@@ -43,9 +43,9 @@ budgr includes an optional AI-powered financial advice feature. When you tap "Se
 
 ## 3. Data Storage
 
-All data you enter in budgr — income figures, expense amounts, goal targets — exists **only in your device's memory for the duration of your session.** When you close the app or tap "Start over," that data is cleared. We do not use local storage, cookies, or device databases to persist your financial information between sessions.
+The data you enter — income figures, expense amounts, and goal targets — is saved **locally on your own device**, using your device's local storage. This lets your budget carry over between sessions so you can pick up where you left off.
 
-*(Note: Future versions of the app may offer optional on-device storage so your budget carries over between sessions. This will remain local to your device and under your full control.)*
+**This information never leaves your device.** It is not transmitted to us or to any server, it is not stored in any cloud, and it is not shared with anyone. You stay in full control: tapping **"Start over"** (or **"Start fresh"** on the welcome-back banner) permanently clears this saved data from your device at any time. The app does not use cookies or behavioral tracking technologies.
 
 ---
 
